@@ -105,8 +105,8 @@ function Modal({ pet, m, onClose, faved, toggleFav, onSent }) {
   return (
     <div className="fixed inset-0 z-40 bg-cocoa/60 flex items-end md:items-center justify-center p-0 md:p-4" onClick={onClose}>
       <div className="bg-cream w-full md:max-w-3xl md:rounded-3xl rounded-t-3xl max-h-[92vh] overflow-y-auto shadow-2xl" onClick={(e) => e.stopPropagation()}>
-        <div className="grid md:grid-cols-2">
-          <div className="relative"><PetFace pet={pet} size={420} /><button onClick={onClose} aria-label="Close" className="absolute top-3 right-3 h-10 w-10 rounded-full bg-white/90 font-bold text-xl">×</button></div>
+        <div className="grid md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+          <div className="relative min-w-0 self-start [&>svg]:w-full [&>svg]:h-auto"><PetFace pet={pet} size={420} /><button onClick={onClose} aria-label="Close" className="absolute top-3 right-3 h-10 w-10 rounded-full bg-white/90 font-bold text-xl">×</button></div>
           <div className="p-6">
             <div className="flex items-start justify-between gap-3">
               <div>
