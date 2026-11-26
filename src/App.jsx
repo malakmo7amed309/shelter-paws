@@ -1,6 +1,19 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { PETS, QUIZ, match } from './data.js'
 
+function Heart({ on, className = '' }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill={on ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2.2" strokeLinejoin="round" aria-hidden="true">
+      <path d="M12 20.5S3.500 15 3.500 9.200A4.700 4.700 0 0 1 12 6.800a4.700 4.700 0 0 1 8.500 2.400C20.500 15 12 20.500 12 20.500z" />
+    </svg>
+  )
+}
+function Check() {
+  return (
+    <svg viewBox="0 0 24 24" className="mr-1 inline h-4 w-4 align-[-3px]" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 12l5 5L20 6" /></svg>
+  )
+}
+
 const LS = 'shelter-paws-v1'
 const load = () => {
   try { return JSON.parse(localStorage.getItem(LS) || '{}') } catch { return {} }
@@ -113,7 +126,7 @@ function Modal({ pet, m, onClose, faved, toggleFav, onSent }) {
                 <h2 className="text-4xl font-extrabold leading-none">{pet.name} <span className="text-coral">{pet.ar}</span></h2>
                 <p className="text-sm font-semibold text-cocoa/60 mt-1.5">{AGE[pet.age]} {pet.species} · {SIZE[pet.size]} · {pet.city}</p>
               </div>
-              <button onClick={() => toggleFav(pet.id)} className={`shrink-0 rounded-full border-2 px-3 py-1.5 text-sm font-bold ${faved ? 'bg-coral text-white border-coral' : 'border-cocoa/15 bg-white'}`}>{faved ? '♥ Saved' : '♡ Save'}</button>
+              <button onClick={() => toggleFav(pet.id)} className={`shrink-0 rounded-full border-2 px-3 py-1.5 text-sm font-bold ${faved ? 'bg-coral text-white border-coral' : 'border-cocoa/15 bg-white'}`}><Heart on={faved} className="mr-1 inline h-4 w-4 align-[-3px]" />{faved ? 'Saved' : 'Save'}</button>
             </div>
             <p className="mt-3 leading-relaxed">{pet.bio}</p>
             <p className="text-xs font-semibold text-cocoa/50 mt-1">Cared for by {pet.shelter}</p>
@@ -121,7 +134,7 @@ function Modal({ pet, m, onClose, faved, toggleFav, onSent }) {
               <div className="mt-4 rounded-2xl bg-teal-l p-3.5">
                 <p className="font-extrabold text-teal">{m.pct}% match for you</p>
                 <ul className="text-sm mt-1 space-y-0.5">
-                  {m.why.map((w) => <li key={w}>✓ {w}</li>)}
+                  {m.why.map((w) => <li key={w}><Check />{w}</li>)}
                   {m.warn.map((w) => <li key={w} className="text-coral-d font-semibold">! {w}</li>)}
                 </ul>
               </div>
@@ -214,7 +227,7 @@ export default function App() {
           <select value={age} onChange={(e) => setAge(e.target.value)} aria-label="Age" className="rounded-full border-2 border-cocoa/15 bg-white px-4 py-1.5 text-sm font-semibold">
             <option value="all">Any age</option><option value="young">Young</option><option value="adult">Adult</option><option value="senior">Senior</option>
           </select>
-          <Chip active={onlyFav} onClick={() => setOnlyFav(!onlyFav)}>♥ Saved ({favs.length})</Chip>
+          <Chip active={onlyFav} onClick={() => setOnlyFav(!onlyFav)}><Heart on className="mr-1 inline h-4 w-4 align-[-3px]" />Saved ({favs.length})</Chip>
         </div>
 
         {answered && <p className="mt-5 font-bold text-teal">Sorted by best match for you. Tap any card to see why.</p>}
@@ -224,14 +237,14 @@ export default function App() {
             <article key={p.id} className="group rounded-3xl bg-white overflow-hidden shadow-sm hover:shadow-xl transition cursor-pointer" onClick={() => setOpen(p.id)}>
               <div className="relative">
                 <PetFace pet={p} size={400} />
-                <button aria-label={favs.includes(p.id) ? 'Remove from saved' : 'Save'} onClick={(e) => { e.stopPropagation(); toggleFav(p.id) }} className={`absolute top-3 right-3 h-10 w-10 rounded-full text-xl ${favs.includes(p.id) ? 'bg-coral text-white' : 'bg-white/90'}`}>{favs.includes(p.id) ? '♥' : '♡'}</button>
+                <button aria-label={favs.includes(p.id) ? 'Remove from saved' : 'Save'} onClick={(e) => { e.stopPropagation(); toggleFav(p.id) }} className={`absolute top-3 right-3 h-10 w-10 rounded-full text-xl ${favs.includes(p.id) ? 'bg-coral text-white' : 'bg-white/90'}`}><Heart on={favs.includes(p.id)} className="mx-auto h-5 w-5" /></button>
                 {m && <span className={`absolute top-3 left-3 rounded-full px-3 py-1 text-sm font-extrabold ${m.pct >= 75 ? 'bg-teal text-white' : m.pct >= 50 ? 'bg-sun' : 'bg-cocoa/80 text-white'}`}>{m.pct}% match</span>}
               </div>
               <div className="p-4">
                 <h3 className="text-2xl font-extrabold leading-none">{p.name} <span className="text-coral">{p.ar}</span></h3>
                 <p className="text-sm font-semibold text-cocoa/60 mt-1">{AGE[p.age]} {p.species} · {SIZE[p.size]} · {p.city}</p>
                 {m ? (
-                  <p className="text-sm mt-2 leading-snug">{m.warn[0] ? <span className="text-coral-d font-semibold">! {m.warn[0]}</span> : <span className="text-teal font-semibold">✓ {m.why[0]}</span>}</p>
+                  <p className="text-sm mt-2 leading-snug">{m.warn[0] ? <span className="text-coral-d font-semibold"><svg viewBox="0 0 24 24" className="mr-1 inline h-4 w-4 align-[-3px]" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M12 4v10M12 19v.5" /></svg>{m.warn[0]}</span> : <span className="text-teal font-semibold"><Check />{m.why[0]}</span>}</p>
                 ) : (
                   <p className="text-sm mt-2 leading-snug text-cocoa/75 line-clamp-2">{p.bio}</p>
                 )}
